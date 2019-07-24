@@ -16,6 +16,10 @@
 module SubAccountAdminPermissionsPlugin
   class Engine < ::Rails::Engine
     config.to_prepare do
+      # In development we have to force loading RoleOverride first, so the
+      # default permissions are registered
+      RoleOverride
+
       Permissions.register :manage_user_logins, {
        :label => lambda { t('permissions.manage_user_logins', "Modify login details for users") },
        :label_v2 => lambda { t("Users - manage login details") },
