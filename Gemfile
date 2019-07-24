@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-# Declare your gem's dependencies in otc_sub_account_admin_permissions_plugin.gemspec.
+# Declare your gem's dependencies in sub_account_admin_permissions_plugin.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and
 # development dependencies will be added by default to the :development group.
 gemspec

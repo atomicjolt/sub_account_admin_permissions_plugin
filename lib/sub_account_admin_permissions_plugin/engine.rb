@@ -13,7 +13,21 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require "otc_sub_account_admin_permissions_plugin/engine"
-
-module OtcSubAccountAdminPermissionsPlugin
+module SubAccountAdminPermissionsPlugin
+  class Engine < ::Rails::Engine
+    config.to_prepare do
+      Permissions.register :manage_user_logins, {
+       :label => lambda { t('permissions.manage_user_logins', "Modify login details for users") },
+       :label_v2 => lambda { t("Users - manage login details") },
+       :available_to => [
+         'AccountAdmin',
+         'AccountMembership'
+       ],
+       :account_only => true,
+       :true_for => [
+         'AccountAdmin'
+       ]
+     }
+    end
+  end
 end
