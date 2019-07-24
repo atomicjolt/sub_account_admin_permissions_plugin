@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://atomicjolt.com"
   s.summary     = "Overrides some subaccount admin permissions in Canvas"
   s.description = "Overrides some subaccount admin permissions in Canvas"
-  s.license     = "None"
+  s.license     = "AGPL-3.0"
 
   s.files = Dir["{app,config,db,lib}/**/*"]
 
