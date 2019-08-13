@@ -19,6 +19,7 @@ module SubAccountAdminPermissionsPlugin
       # In development we have to force loading RoleOverride first, so the
       # default permissions are registered
       RoleOverride
+      I18n
 
       Permissions.register :manage_user_logins, {
        :label => lambda { t('permissions.manage_user_logins', "Modify login details for users") },
