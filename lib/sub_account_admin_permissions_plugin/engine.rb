@@ -19,20 +19,19 @@ module SubAccountAdminPermissionsPlugin
       # In development we have to force loading RoleOverride first, so the
       # default permissions are registered
       RoleOverride
-      I18n
 
       Permissions.register :manage_user_logins, {
-       :label => lambda { t('permissions.manage_user_logins', "Modify login details for users") },
-       :label_v2 => lambda { t("Users - manage login details") },
-       :available_to => [
-         'AccountAdmin',
-         'AccountMembership'
-       ],
-       :account_only => true,
-       :true_for => [
-         'AccountAdmin'
-       ]
-     }
+        :label => lambda { I18n.t('permissions.manage_user_logins', "Modify login details for users") },
+        :label_v2 => lambda { I18n.t("Users - manage login details") },
+        :available_to => [
+          'AccountAdmin',
+          'AccountMembership'
+        ],
+        :account_only => true,
+        :true_for => [
+          'AccountAdmin'
+        ]
+      }
     end
   end
 end
