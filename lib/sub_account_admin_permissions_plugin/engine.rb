@@ -16,22 +16,32 @@
 module SubAccountAdminPermissionsPlugin
   class Engine < ::Rails::Engine
     config.to_prepare do
-      # In development we have to force loading RoleOverride first, so the
-      # default permissions are registered
-      RoleOverride
+      Canvas::Plugin.register(:otc_sub_account_admin_permissions, nil, {
+        name: "OTC Sub-Account Admin Permissions",
+        author: "Atomic Jolt",
+        description: "Enables allowing sub-accounts to manage user login details",
+        version: "1.1.0",
+        select_text: "OTC Sub-Account Admin Permisisons",
+        settings_partial: 'sub_account_admin_permissions_plugin/plugin_settings'
+      })
+      if ActiveRecord::Base.connection.table_exists?('plugin_settings') && Canvas::Plugin.find(:otc_sub_account_admin_permissions).enabled?
+        # In development we have to force loading RoleOverride first, so the
+        # default permissions are registered
+        RoleOverride
 
-      Permissions.register :manage_user_logins, {
-        :label => lambda { I18n.t('permissions.manage_user_logins', "Modify login details for users") },
-        :label_v2 => lambda { I18n.t("Users - manage login details") },
-        :available_to => [
-          'AccountAdmin',
-          'AccountMembership'
-        ],
-        :account_only => true,
-        :true_for => [
-          'AccountAdmin'
-        ]
-      }
+        Permissions.register :manage_user_logins, {
+          :label => lambda { I18n.t('permissions.manage_user_logins', "Modify login details for users") },
+          :label_v2 => lambda { I18n.t("Users - manage login details") },
+          :available_to => [
+            'AccountAdmin',
+            'AccountMembership'
+          ],
+          :account_only => true,
+          :true_for => [
+            'AccountAdmin'
+          ]
+        }
+      end
     end
   end
 end
