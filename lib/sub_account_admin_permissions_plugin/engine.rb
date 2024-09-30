@@ -29,18 +29,59 @@ module SubAccountAdminPermissionsPlugin
         # default permissions are registered
         RoleOverride
 
-        Permissions.register :manage_user_logins, {
-          :label => lambda { I18n.t('permissions.manage_user_logins', "Modify login details for users") },
-          :label_v2 => lambda { I18n.t("Users - manage login details") },
-          :available_to => [
-            'AccountAdmin',
-            'AccountMembership'
-          ],
-          :account_only => true,
-          :true_for => [
-            'AccountAdmin'
-          ]
-        }
+        User
+
+        Permissions.register(
+          become_user: {
+            label: -> { "Act as users" },
+            label_v2: -> { "Users - act as" },
+            account_only: true,
+            true_for: %w[AccountAdmin],
+            available_to: %w[AccountAdmin AccountMembership],
+          }
+        )
+
+        module UserExtension
+          def can_masquerade?(masquerader, account)
+
+            # Get a list of all the accounts that the user's courses
+            # are contained within. This is used to determine if the
+            # user can masquerade as a user in a sub-account.
+            # This will result in n+1 queries :(
+            accounts = []
+            courses.preload(:account).each do |course|
+              curr = course.account
+              while curr != nil
+                accounts << curr
+                curr = curr.parent_account
+              end
+            end
+
+            accounts.uniq! { |a| a.id }
+
+            # Get all the accounts that the masquerader is an admin of
+            admin_accounts = masquerader.account_users.active.preload(:account).map(&:account)
+            intersection = accounts & admin_accounts
+
+            # If the masqureader is an admin in one of the parent accounts of
+            # the user's courses, then they can masquerade as the user
+            if intersection.length > 0
+              account = intersection.last
+
+              # We have to fake root_account privileges for the
+              # sub-account or Canvas will normally always return false
+              def account.root_account?
+                true
+              end
+            end
+
+            super(masquerader, account)
+          end
+        end
+
+        class ::User < ActiveRecord::Base
+          prepend UserExtension
+        end
       end
     end
   end
