@@ -47,17 +47,8 @@ module SubAccountAdminPermissionsPlugin
             # Get a list of all the accounts that the user's courses
             # are contained within. This is used to determine if the
             # user can masquerade as a user in a sub-account.
-            # This will result in n+1 queries :(
-            accounts = []
-            courses.preload(:account).each do |course|
-              curr = course.account
-              while curr != nil
-                accounts << curr
-                curr = curr.parent_account
-              end
-            end
-
-            accounts.uniq! { |a| a.id }
+            # This will result in n + 1 queries but it is cached
+            accounts = courses.map(&:associated_accounts).flatten.uniq
 
             # Get all the accounts that the masquerader is an admin of
             admin_accounts = masquerader.account_users.active.preload(:account).map(&:account)
