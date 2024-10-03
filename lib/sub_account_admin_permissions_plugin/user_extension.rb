@@ -38,7 +38,7 @@ module SubAccountAdminPermissionsPlugin
       ensure
         # We don't want this method to persist past this call
         # As active record may cache the object and cause issues
-        if intersection.length > 0
+        if account.singleton_class.respond_to?(:root_account?)
           account.singleton_class.remove_method(:root_account?)
         end
       end
