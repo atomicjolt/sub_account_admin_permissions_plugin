@@ -6,6 +6,9 @@ module SubAccountAdminPermissionsPlugin
       alias_method :canvas_can_masquerade?, :can_masquerade?
 
       def can_masquerade?(masquerader, account)
+        # Skip modificatiosn for root admins
+        return canvas_can_masquerade?(masquerader, account) if masquerader.root_admin_for?(account)
+
         # Get a list of all the accounts that the user's courses
         # are contained within. This is used to determine if the
         # user can masquerade as a user in a sub-account.
@@ -28,7 +31,16 @@ module SubAccountAdminPermissionsPlugin
           end
         end
 
+        # We then call the original method as
+        # it actually does the checking if the user has the
+        # permissions that are required to masquerade as a user
         canvas_can_masquerade?(masquerader, account)
+      ensure
+        # We don't want this method to persist past this call
+        # As active record may cache the object and cause issues
+        if intersection.length > 0
+          account.singleton_class.remove_method(:root_account?)
+        end
       end
     end
   end
