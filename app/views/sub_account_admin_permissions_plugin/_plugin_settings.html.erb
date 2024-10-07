@@ -1,2 +1,13 @@
 <!-- This file needs to be here to enable the settings page in Canvas -->
 <p>Your Canvas administrator will have to restart Canvas after enabling or disabling this plugin</p>
+
+<%= fields_for :settings do |f| %>
+<p>
+  <%= f.check_box :subaccount_manage_user_logins, { checked: Canvas::Plugin.value_to_boolean(settings[:subaccount_manage_user_logins])}, 'true', 'false' %>
+  <%= f.label :subaccount_manage_user_logins, :en => "Allow sub-account admins to manage login details for users" %>
+</p>
+<p>
+  <%= f.check_box :subaccount_become_user, { checked: Canvas::Plugin.value_to_boolean(settings[:subaccount_become_user])}, 'true', 'false' %>
+  <%= f.label :subaccount_become_user, :en => "Allow sub-account admins to act-as other users" %>
+</p>
+<% end %>
