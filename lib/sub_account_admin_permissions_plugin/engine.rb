@@ -23,7 +23,7 @@ module SubAccountAdminPermissionsPlugin
         name: "OTC Sub-Account Admin Permissions",
         author: "Atomic Jolt",
         description: "Enables allowing sub-accounts to manage user login details",
-        version: "1.2.0",
+        version: "1.2.1",
         select_text: "OTC Sub-Account Admin Permisisons",
         settings_partial: 'sub_account_admin_permissions_plugin/plugin_settings'
       })
